@@ -5,13 +5,15 @@ using UnityEngine;
 
 public class Damageable : MonoBehaviour
 {
-    public bool restartOnDeath;
+    public bool death = false;
     public float maxHealth;
     public float currentHealth;
 
     public Transform healthBar;
+    public bool getReward = false;
+    public int reward = 10;
 
-    public void ApplyDamageOrHill(float value, Transform damageDealer = null)
+    public virtual void ApplyDamageOrHill(float value, Transform damageDealer = null)
     {
         currentHealth -= value;
         if (currentHealth > maxHealth)
@@ -21,7 +23,11 @@ public class Damageable : MonoBehaviour
         if (currentHealth <= 0)
         {
             currentHealth = 0;
-            OnDeath();
+            if (!death)
+            {
+                death = true;
+                OnDeath();
+            }
         }
         if (healthBar != null)
         {
@@ -32,20 +38,20 @@ public class Damageable : MonoBehaviour
 
     private void FixedUpdate() 
     {
-        if (transform.position.y < -20)
+        if (transform.position.y < -20 && !death)
         {
             OnDeath();
         }
     }
 
-    private void OnDeath()
+
+    public virtual void OnDeath(float deathTime = .1f)
     {
-        if (restartOnDeath)
+        Destroy(gameObject, deathTime);
+        
+        if (getReward)
         {
-            GameManager.instance.RestartLevel();
-            return;
+            GameManager.instance.crystalsCount.text = (int.Parse(GameManager.instance.crystalsCount.text) + reward).ToString();
         }
-        Destroy(gameObject, .4f);
-        GameManager.instance.crystalsCount.text = (int.Parse(GameManager.instance.crystalsCount.text) + 10).ToString();
     }
 }

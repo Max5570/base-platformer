@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,6 +13,8 @@ public class LaserGun : WeaponBase
     public Transform firePoint;
 
     private bool attacking;
+    private Transform currentTarget;
+    private Damageable damageableTarget;
 
     private void Start() 
     {
@@ -39,11 +42,46 @@ public class LaserGun : WeaponBase
             Attack();
         }
 
+        Transform target = OnAttack();
+        if (target)
+        {
+            if (target != currentTarget)
+            {
+                FreeTarget();
+                currentTarget = target;
+                if (currentTarget.GetComponent<Damageable>() != null)
+                {
+                    damageableTarget = currentTarget.GetComponent<Damageable>();
+                }
+            }
+            if (damageableTarget)
+            {
+                damageableTarget.ApplyDamageOrHill(.2f);
+            }
+        } else
+        {
+            FreeTarget();
+        }
+
         if (Input.GetKeyUp(KeyCode.LeftControl))
         {
             EndAttack();
+            FreeTarget();
         }
+    }
 
+    private void FreeTarget()
+    {
+        try
+        {
+            Enemy enemy = currentTarget.GetComponent<Enemy>();
+            enemy.status = Enemy.Status.empty;
+            enemy.animator.SetBool("GetHit", false);
+        } catch{}
+    }
+
+    private Transform OnAttack()
+    {
         if(attacking)
         {
             float direction = transform.parent.localScale.x;
@@ -59,10 +97,7 @@ public class LaserGun : WeaponBase
                 laser.SetPosition(1, new Vector2(movePoint.x + .2f * direction, firePoint.position.y));
                 lightning.SetPosition(1, new Vector2(movePoint.x, firePoint.position.y + .2f * direction));
                 hitFX.transform.position = movePoint;
-                if (hit.transform.GetComponent<Damageable>() != null)
-                {
-                    hit.transform.GetComponent<Damageable>().ApplyDamageOrHill(.2f);
-                }
+                return hit.transform;
             }
             else
             {
@@ -73,5 +108,6 @@ public class LaserGun : WeaponBase
                 hitFX.transform.position = new Vector2(movePoint.x, firePoint.position.y);
             }
         }
+        return null;
     }
 }

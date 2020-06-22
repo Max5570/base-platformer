@@ -5,11 +5,11 @@ using UnityEngine;
 public class SpikeDamage : MonoBehaviour
 {
     public float damage;
-    private void OnCollisionEnter2D(Collision2D other) 
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.transform.GetComponent<Damageable>() != null)
+        if (other.transform == GameManager.instance.player.transform)
         {
-            other.transform.GetComponent<Damageable>().ApplyDamageOrHill(damage);
+            GameManager.instance.ChangePlayerHealth(damage, transform);
         }
     }
 }

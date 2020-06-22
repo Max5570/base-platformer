@@ -25,7 +25,8 @@ public class DialogueManager : Singleton<DialogueManager>
         sentenceIndex = 0;
         currentDialogIndex = index;
         //Made player stand still during dialogue
-        GameManager.instance.SetPlayerStatus(Player.Status.stunned);
+        
+        //GameManager.instance.SetPlayerStatus(Player.Status.stunned);
 
         DisplayNextSentence();
     }

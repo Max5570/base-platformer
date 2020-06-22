@@ -27,6 +27,7 @@ public class Fade : MonoBehaviour
             image.color = color;
         }
         GameManager.instance.SetPlayerStatus(Player.Status.empty);
+        GameManager.instance.player.damageable.Revive();
     }
 
     public void FadeIn(float time = 1)

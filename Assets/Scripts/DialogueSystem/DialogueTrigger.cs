@@ -12,4 +12,12 @@ public class DialogueTrigger : MonoBehaviour
             DialogueManager.instance.StartDialogue(dialogueIndex);
         }
     }
+
+    private void OnTriggerEnter2D(Collider2D other) 
+    {
+        if (other.transform.GetComponent<Player>() != null)
+        {
+            DialogueManager.instance.StartDialogue(dialogueIndex);
+        }
+    }
 }

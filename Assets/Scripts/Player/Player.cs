@@ -13,4 +13,5 @@ public class Player : MonoBehaviour
 
     public Status status;
     public PlayerMovement movement;
+    public PlayerDamageable damageable;
 }
